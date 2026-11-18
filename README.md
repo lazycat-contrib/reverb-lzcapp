@@ -12,8 +12,8 @@
 
 ## 说明
 
-- `min_os_version: 1.6.0`（`run_as` 需要 UID/GID owner 映射）
-- 容器以 uid 1000 运行；`/data`（SQLite 与内置 Navidrome 数据）与 `/music`（下载的音乐）映射到应用数据目录
+- `min_os_version: 1.5.0`
+- 容器保持上游默认的 uid 1000；`/data`（SQLite 与内置 Navidrome 数据）与 `/music`（下载的音乐）映射到应用数据目录
 - 图标来自上游 `web/public/icons/icon-512.png`
 - 请勿在应用内自更新，版本跟随由 CI 维护
 - 仅用于下载你有权获取的音乐

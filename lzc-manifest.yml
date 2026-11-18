@@ -26,8 +26,7 @@ services:
     # 镜像模式（delivery.mode=mirror）发布到喵喵商店时，Action 会把此行改写为
     # ghcr.1ms.run/maxjb-xyz/reverb:<tag> 并要求 digest 匹配
     image: ghcr.1ms.run/maxjb-xyz/reverb:0.4.0
-    # 上游镜像以 uid 1000 运行；run_as 让 /lzcapp 持久目录按同一身份挂载
-    run_as: "1000:1000"
+    # 上游镜像默认以 uid 1000 运行（不做 user 覆盖，与 pingvin-share 同款做法）
     environment:
       - REVERB_ADMIN_PASSWORD={{ .U.admin_password }}
     binds:

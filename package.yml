@@ -2,7 +2,7 @@ package: community.lazycat.app.reverb
 version: 0.4.0
 name: Reverb
 description: "Self-hosted music app: browse your own library and an online catalog in one place, see what you already have, download missing tracks in one click, and play everything in a built-in web player with synced lyrics and radio mixes (AGPL-3.0)."
-min_os_version: 1.6.0
+min_os_version: 1.5.0
 homepage: https://github.com/maxjb-xyz/reverb
 author: maxjb-xyz
 license: AGPL-3.0
