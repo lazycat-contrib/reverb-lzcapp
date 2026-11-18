@@ -1,0 +1,42 @@
+application:
+  subdomain: reverb
+  background_task: true
+  upstreams:
+    - location: /
+      backend: http://reverb:8090/
+  health_check:
+    test_url: http://reverb:8090/api/v1/health
+    timeout: 10s
+    start_period: 120s
+  # 应用自带账号体系：首次启动用安装参数种子 admin 账号，登录页自动填充实现免密
+  public_path:
+    - /
+  injects:
+    - id: login-autofill
+      when:
+        - /
+      do:
+        - src: builtin://simple-inject-password
+          params:
+            user: "admin"
+            password: "{{ .U.admin_password }}"
+services:
+  reverb:
+    # upstream: ghcr.io/maxjb-xyz/reverb:0.4.0
+    # 镜像模式（delivery.mode=mirror）发布到喵喵商店时，Action 会把此行改写为
+    # ghcr.1ms.run/maxjb-xyz/reverb:<tag> 并要求 digest 匹配
+    image: ghcr.1ms.run/maxjb-xyz/reverb:0.4.0
+    # 上游镜像以 uid 1000 运行；run_as 让 /lzcapp 持久目录按同一身份挂载
+    run_as: "1000:1000"
+    environment:
+      - REVERB_ADMIN_PASSWORD={{ .U.admin_password }}
+    binds:
+      - /lzcapp/var/data:/data
+      - /lzcapp/var/music:/music
+    mem_limit: 2g
+usage: |
+  Reverb 把「已有音乐库」和「在线曲库」放在同一个搜索框里：搜到的曲目会标出是否已在库中，不在库的可以一键下载（内置 spotDL + ffmpeg），下载完成后自动入库并可立即播放。
+  内置音乐服务（Navidrome）与下载器都打包在同一容器里，无需额外配置；下载的音乐保存在应用数据目录的 music 子目录。
+  管理账号：用户名 admin，密码为安装时生成的密码（登录页已自动填充）；如需在应用内改密码，改完请记住新密码。
+  首次进入后建议在「设置 → 搜索源」添加 Deezer（免密钥即可用）；Spotify 目录需要自备 API 凭据。
+  下载功能依赖互联网访问，请仅下载你有权获取的音乐。

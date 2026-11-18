@@ -1,0 +1,42 @@
+version: 1
+
+project:
+  root: .
+  build_config: lzc-build.yml
+  package_file: package.yml
+  output: dist/application.lpk
+  target_arch: amd64
+
+update:
+  strategy: publish
+  allow_downgrade: false
+  version_source:
+    type: image
+    image: reverb
+
+build:
+  toolchains: []
+  run_buildscript: false
+
+images:
+  # 主服务：Reverb（Go 单二进制 + 内嵌 SPA + 内置 Navidrome/spotDL），GHCR 发布纯 SemVer tag（无 v 前缀）
+  - id: reverb
+    target: service
+    service: reverb
+    source: ghcr.io/maxjb-xyz/reverb
+    channel: stable
+    sort: semver
+    tag_regex: '^[0-9]+\.[0-9]+\.[0-9]+$'
+    delivery:
+      # 喵喵商店镜像模式：经 ghcr.1ms.run 加速直连上游，要求 digest 与上游一致
+      mode: mirror
+      require_digest_match: true
+
+stores:
+  official:
+    enabled: false
+  private:
+    enabled: true
+    skip_if_version_exists: true
+    name: Reverb
+    summary: 自托管音乐应用：一个界面浏览已有曲库与在线曲库，一键下载缺失曲目，内置播放器与同步歌词（AGPL-3.0）。
